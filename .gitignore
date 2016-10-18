@@ -1,0 +1,5 @@
+.bash_history
+.DS_Store
+.vagrant
+playbook.retry
+*.log
