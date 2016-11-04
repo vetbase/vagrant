@@ -4,32 +4,25 @@
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
+IP_ADDRESS = "192.168.27.54"
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |vagrant|
-    vagrant.vm.box = "ubuntu/wily64"
+    vagrant.vm.box = "vetbase/centos-7"
 
     # set IP address
-    vagrant.vm.network "private_network", ip: "192.168.2.14"
+    vagrant.vm.network "private_network", ip: IP_ADDRESS
 
     # always use vagrant's insecure key
     vagrant.ssh.insert_key = false
 
-    # avoid ubuntu tty warning
-    vagrant.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
-
-    # speed up docker builds
+    # virtualbox specific settings
     vagrant.vm.provider "virtualbox" do |v|
-        v.customize ["modifyvm", :id, "--nictype1", "virtio"]
+        # custom name
+        v.name = "vetbase-postgres"
     end
 
-    vagrant.vm.provision "shell", inline: "sudo apt-get upgrade -y python && \
-                                           sudo apt-get install -y python-pip python-dev openssl libssl-dev && \
-                                           sudo apt-get install -y software-properties-common && \
-                                           sudo apt-add-repository -y ppa:ansible/ansible && \
-                                           sudo apt-get update -y && \
-                                           sudo apt-get install -y ansible"
-
+    # run ansible provisioner
     vagrant.vm.provision "ansible_local" do |ansible|
         ansible.playbook = "playbook.yml"
-        ansible.install  = true
     end
 end

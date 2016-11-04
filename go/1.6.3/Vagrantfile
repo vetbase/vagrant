@@ -13,14 +13,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |vagrant|
     # virtualbox specific settings
     vagrant.vm.provider "virtualbox" do |v|
         # custom name
-        v.name = "vetbase-docker"
-
-        # speed up docker builds
-        v.customize ["modifyvm", :id, "--nictype1", "virtio"]
+        v.name = "vetbase-golang"
     end
-
-    # create development directory
-    #vagrant.vm.synced_folder 
 
     # run ansible playbook
     vagrant.vm.provision "ansible" do |ansible|
